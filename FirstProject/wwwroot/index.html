@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Store</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Globalna sieć sklepów</h1>
+    <form id="add" action="/product" method="post">
+        <label for="name">Nazwa: </label>
+        <input type="text" id="name" name="name">
+        <label for="price">Cena: </label>
+        <input type="text" id="price" name="price">
+        <label for="category">Kategoria: </label>
+        <input type="text" id="category" name="category">
+        <input type="submit" value="Dodaj"/>
+    </form>
+    <ul id="products">
+        
+    </ul>
+    <script>
+        function getP(key, value) {
+            return `<p>${key}: ${value} </p>`;
+        }
+        function submit(name, price, category) {
+
+        }
+        function remove(id) {
+            $.ajax({
+                url: '/product?Id=' + id,
+                type: 'DELETE',
+                success: function(data) {
+                    if (data == "True") {
+                        var ul = document.querySelector("ul");
+                        var li = document.getElementById(id);
+                        ul.removeChild(li);
+                    }
+                }
+            })
+        }
+        $("#add").submit(function (event) {
+            $.ajax({
+                url: `/product?name=${$("#name").val()}&price=${$("#price").val()}&category=${$("#category").val()}`,
+                type: 'POST',
+                success: function(response) {
+                    var item = JSON.parse(response);
+                    $("ul").append(
+                        `<li id="${item.Id}"`+
+                            getP("ID", item.Id) + getP("Nazwa", item.Name) + getP("Cena" ,item.Price) + getP("Kategoria" ,item.Category) +
+                            "<button onclick='remove(" + item.Id + ")'>Usuń</button>" +
+                        "</li>");
+                }
+            })
+            event.preventDefault();
+        })
+        $.get("/products", function(response) {
+            var array = JSON.parse(response);
+            array.forEach(item => {
+                $("ul").append(
+                    `<li id="${item.Id}"`+
+                        getP("ID", item.Id) + getP("Nazwa", item.Name) + getP("Cena" ,item.Price) + getP("Kategoria" ,item.Category) +
+                        "<button onclick='remove(" + item.Id + ")'>Usuń</button>" +
+                    "</li>");
+            })
+        });
+    </script>
+</body>
+</html>
