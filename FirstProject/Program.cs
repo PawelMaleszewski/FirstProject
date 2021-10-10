@@ -26,12 +26,12 @@ namespace FirstProject
                 {
                     webBuilder.Configure(app =>
                     {
-                        app.UseDeveloperExceptionPage();
-                        app.UseRouting();
+                        app.UseDeveloperExceptionPage(); //wyswietla bledy aplikacji w przegladarce
+                        app.UseRouting(); //umozliwia dostep do ró¿nych url np http://localhost:47122/product
 
-                        app.UseDefaultFiles();
-                        app.UseStaticFiles();
-                        app.UseEndpoints(endpoints =>
+                        app.UseDefaultFiles(); // bez tego byloby http://localhost:47122/index.html, a z tym mozemy requestowac do http://localhost:47122
+                        app.UseStaticFiles(); // umozliwia pobieranie plikow z folderu wwwroot
+                        app.UseEndpoints(endpoints => // definiuje co sie dzieje kiedy requestujem do subadresu np /products
                         {
                             endpoints.MapGet("/products", async context =>
                             {
