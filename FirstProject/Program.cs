@@ -27,13 +27,17 @@ namespace FirstProject
                     webBuilder.Configure(app =>
                     {
                         app.UseDeveloperExceptionPage(); //wyswietla bledy aplikacji w przegladarce
-                        app.UseRouting(); //umozliwia dostep do ró¿nych url np http://localhost:47122/product
+                        app.UseRouting(); //umozliwia dostep do rï¿½nych url np http://localhost:47122/product
 
                         app.UseDefaultFiles(); // bez tego byloby http://localhost:47122/index.html, a z tym mozemy requestowac do http://localhost:47122
                         app.UseStaticFiles(); // umozliwia pobieranie plikow z folderu wwwroot
                         app.UseEndpoints(endpoints => // definiuje co sie dzieje kiedy requestujem do subadresu np /products
                         {
                             endpoints.MapGet("/products", async context =>
+                            {
+                                await context.Response.WriteAsync(JsonSerializer.Serialize(_store.GetProducts()));
+                            });
+                            endpoints.MapGet("/update", async context =>
                             {
                                 await context.Response.WriteAsync(JsonSerializer.Serialize(_store.GetProducts()));
                             });
@@ -49,14 +53,14 @@ namespace FirstProject
                                 var id = int.Parse(context.Request.Query["Id"].ToString());
                                 await context.Response.WriteAsync(_store.Remove(id).ToString());
                             });
-                            endpoints.MapPut("/product", async context =>
+                            endpoints.MapPost("/update", async context =>
                             {
-                                // todo frontend
-                                var id = int.Parse(context.Request.Query["name"].ToString());
-                                var name = context.Request.Query["name"].ToString();
-                                var price = decimal.Parse(context.Request.Query["price"].ToString());
-                                var category = (Category)int.Parse(context.Request.Query["category"].ToString());
-                                await context.Response.WriteAsync(_store.Update(id, name, price, category).ToString());
+                                var id = int.Parse(context.Request.Form["id"].ToString());
+                                var name = context.Request.Form["name"].ToString();
+                                var price = decimal.Parse(context.Request.Form["price"].ToString());
+                                var category = (Category)int.Parse(context.Request.Form["category"].ToString());
+                                _store.Update(id, name, price, category);
+                                context.Response.Redirect("/");
                             });
                         });
                     });

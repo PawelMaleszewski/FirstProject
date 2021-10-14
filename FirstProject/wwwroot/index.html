@@ -23,8 +23,25 @@
         function getP(key, value) {
             return `<p>${key}: ${value} </p>`;
         }
-        function submit(name, price, category) {
-
+        function redirect() {
+            window.redirect("/")
+        }
+        function getForm(item) {
+            return `<li id="${item.Id}">
+                        <form id="update${item.Id}" action="/update" method="post" onclick="redirect();">
+                            ${getP("ID", item.Id)}
+                            <input type="hidden" name="id" value="${item.Id}">        
+                            <label for="name">Nazwa: </label>
+                            <input type="text" name="name" value="${item.Name}">
+                            <label for="price">Cena: </label>
+                            <input type="text" name="price" value="${item.Price}">
+                            <label for="category">Kategoria: </label>
+                            <input type="text" name="category" value="${item.Category}">
+                            <input type="submit" value="Zaktualizuj"/>
+                        </form>
+                        <button onclick='remove(${item.Id})'>Usuń</button>
+                    </li>
+`;
         }
         function remove(id) {
             $.ajax({
@@ -45,11 +62,7 @@
                 type: 'POST',
                 success: function(response) {
                     var item = JSON.parse(response);
-                    $("ul").append(
-                        `<li id="${item.Id}"`+
-                            getP("ID", item.Id) + getP("Nazwa", item.Name) + getP("Cena" ,item.Price) + getP("Kategoria" ,item.Category) +
-                            "<button onclick='remove(" + item.Id + ")'>Usuń</button>" +
-                        "</li>");
+                    $("ul").append(getForm(item));
                 }
             })
             event.preventDefault();
@@ -57,11 +70,7 @@
         $.get("/products", function(response) {
             var array = JSON.parse(response);
             array.forEach(item => {
-                $("ul").append(
-                    `<li id="${item.Id}"`+
-                        getP("ID", item.Id) + getP("Nazwa", item.Name) + getP("Cena" ,item.Price) + getP("Kategoria" ,item.Category) +
-                        "<button onclick='remove(" + item.Id + ")'>Usuń</button>" +
-                    "</li>");
+                $("ul").append(getForm(item));
             })
         });
     </script>
