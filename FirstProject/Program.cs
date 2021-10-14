@@ -29,7 +29,7 @@ namespace FirstProject
                         app.UseDeveloperExceptionPage(); //wyswietla bledy aplikacji w przegladarce
                         app.UseRouting(); //umozliwia dostep do r�nych url np http://localhost:47122/product
 
-                        app.UseDefaultFiles(); // bez tego byloby http://localhost:47122/index.html, a z tym mozemy requestowac do http://localhost:47122
+                        app.UseDefaultFiles(); // bez tego byloby http://localhost:47122/index.html, a z tym mozemy requestowac do http://localhost:47122 
                         app.UseStaticFiles(); // umozliwia pobieranie plikow z folderu wwwroot
                         app.UseEndpoints(endpoints => // definiuje co sie dzieje kiedy requestujem do subadresu np /products
                         {
