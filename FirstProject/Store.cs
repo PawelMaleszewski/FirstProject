@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace FirstProject
@@ -35,7 +36,7 @@ namespace FirstProject
         {
             var products = GetProducts();
 
-            // int lattestId = products.Length > 0 ? products.Select(product => product.Id).Max() : 0;
+            //int lattestId = products.Length > 0 ? products.Select(product => product.Id).Max() : 0;
             //if (products.Length > 0)
             //{
             //    latestId = products.Select(product => product.Id).Max(); //praca domowa stworzyc funkcje ktora zrobi dokladnie to samo ale bez system.linq
@@ -99,24 +100,14 @@ namespace FirstProject
 
         public bool Update(int id, string name, decimal price, Category category)
         {
-            int index = -1;
+
             var products = GetProducts();
             var newCollection = new List<Product>(products);
 
-            for (int i = 0; i < newCollection.Count; i++)
-            {
-                if (newCollection[i].Id == id)
-                {
-                    index = i;
-                    break;
-                }
-            }
-
-            newCollection[index].Name = name;
-
-            newCollection[index].Price = price;
-
-            newCollection[index].Category = category;
+            var product = newCollection.FirstOrDefault(x => x.Id == id);
+            product.Name = name;
+            product.Price = price;
+            product.Category = category;
 
             var serialized = JsonSerializer.Serialize(newCollection);
             File.WriteAllText(path, serialized);
